@@ -20,6 +20,32 @@ def mark_task():
         done_listbox.insert(tk.END, task)
         task_listbox.delete(selected)
 
+def edit_task(event):
+    selected = task_listbox.curselection()
+    if selected:
+        index = selected[0]
+        old_text = task_listbox.get(index)
+
+        # Всплывающее окно редактирования
+        edit_window = tk.Toplevel(root)
+        edit_window.title("Edit Task")
+        edit_window.geometry("300x100")
+        edit_window.configure(bg="#f0f0f0")
+
+        entry = tk.Entry(edit_window, width=40)
+        entry.insert(0, old_text)
+        entry.pack(pady=10)
+
+        def save_edit():
+            new_text = entry.get()
+            if new_text:
+                task_listbox.delete(index)
+                task_listbox.insert(index, new_text)
+                edit_window.destroy()
+
+        save_button = tk.Button(edit_window, text="Сохранить", command=save_edit, bg="#90be6d")
+        save_button.pack()
+
 root = tk.Tk()
 root.title("To-Do List")
 root.configure(background="#e6e6fa", padx=10, pady=10)
@@ -58,6 +84,8 @@ done_frame.pack(side=tk.LEFT, padx=10)
 tk.Label(done_frame, text="Done", bg="#e6e6fa", font=('Arial', 12, 'bold')).pack()
 done_listbox = tk.Listbox(done_frame, height=10, width=30, bg="#d8f3dc", font=('Arial', 10))
 done_listbox.pack()
+
+task_listbox.bind("<Double-Button-1>", edit_task)
 
 deleted_frame = tk.Frame(list_frame, bg="#e6e6fa")
 deleted_frame.pack(side=tk.LEFT, padx=10)
